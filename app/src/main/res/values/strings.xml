@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">SimpleMusicPlayerDemo</string>
+    <string name="pre_btn_text">上一首</string>
+    <string name="next_btn_text">下一首</string>
+    <string name="pause_btn_text">暂 停</string>
+    <string name="play_btn_text">播 放</string>
+    <string name="close_btn_text">关闭Player</string>
+    <string name="exit_btn_text">退出App</string>
+</resources>
