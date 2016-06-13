@@ -10,7 +10,7 @@ public class MusicBean {
     private String title;
     private int duration;
     private String songAuthor;
-    private String location;
+    private String data;
 
     public void setFileName(String fileName){
         this.fileName = fileName;
@@ -44,12 +44,12 @@ public class MusicBean {
         return songAuthor;
     }
 
-    public void setLocation(String location){
-        this.location = location;
+    public void setData(String data){
+        this.data = data;
     }
 
-    public String getLocation(){
-        return location;
+    public String getData(){
+        return data;
     }
 
 }
