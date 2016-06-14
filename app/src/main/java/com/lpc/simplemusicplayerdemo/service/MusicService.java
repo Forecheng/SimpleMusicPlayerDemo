@@ -4,12 +4,14 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.os.IBinder;
 import android.provider.MediaStore.Audio;
 import android.support.annotation.Nullable;
 
+import com.lpc.simplemusicplayerdemo.Constant;
 import com.lpc.simplemusicplayerdemo.MainActivity;
 import com.lpc.simplemusicplayerdemo.bean.MusicBean;
 
@@ -29,10 +31,17 @@ public class MusicService extends Service {
     private List<MusicBean> musicLists = new ArrayList<>();
     private List<Map<String,Object>> list = new ArrayList<>();
 
+    /**
+     * 0x11:停止状态
+     * 0x12:播放状态
+     * 0x13:暂停状态
+     * */
     private int mStatus = 0x11;   //标识当前的播放状态：停止，暂停，播放
     private int mCurrent = 0;     //表示当前未播放的文件数
     private  int count = 0;        //表示文件数
     private int flag = 0;
+
+    private MyReceiver receiver;
 
     @Override
     public void onCreate() {
@@ -40,15 +49,32 @@ public class MusicService extends Service {
         flag = 1;
         //当activity首次显示的时候就将歌曲显示在ListView中
         showMusicLists();
-
+        count = musicLists.size();
+        receiver = new MyReceiver();
+        IntentFilter intentFilter = new IntentFilter(Constant.CTRL_Action);
+        registerReceiver(receiver,intentFilter);
+        mPlayer = new MediaPlayer();
+        mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mCurrent ++;
+                if (mCurrent > count){
+                    mCurrent = 0;
+                }
+                playMusicFile(musicLists.get(mCurrent).getData());
+            }
+        });
     }
 
     @Override
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
-//        if (flag == 2){
-//            Intent sendIntent = new Intent(MainActivity)
-//        }
+        if (flag == 2){
+            Intent sendIntent = new Intent(Constant.UPDATE_ACTION);
+            sendIntent.putExtra("update",mStatus);
+            sendBroadcast(sendIntent);
+        }
+        flag = 2;
     }
 
     /**
@@ -133,8 +159,55 @@ public class MusicService extends Service {
             int control = intent.getIntExtra("control",-1);
             switch (control){
                 case 1:
+                    //处于停止状态
+                    if (mStatus == Constant.STATUS_STOP){
+                        playMusicFile(musicLists.get(mCurrent).getData());
+                        mStatus = Constant.STATUS_PLAY;
+                    }
+                    //处于播放状态
+                    else if (mStatus == Constant.STATUS_PLAY){
+                        mPlayer.pause();
+                        mStatus = Constant.STATUS_PAUSE;
+                    }
+                    //处于暂停状态
+                    else if (mStatus == Constant.STATUS_PAUSE){
+                        mPlayer.start();
+                        mStatus = Constant.STATUS_PLAY;
+                    }
+                    break;
+                case 2:
+                    if (mStatus == Constant.STATUS_PLAY || mStatus == Constant.STATUS_PAUSE){
+                        mPlayer.stop();
+                        mStatus = Constant.STATUS_STOP;
+                    }
+                    break;
+                case 3:
+                    mCurrent--;
+                    if (mCurrent < 0){
+                        mCurrent = count;
+                    }
+                    playMusicFile(musicLists.get(mCurrent).getData());
+                    mStatus = Constant.STATUS_PLAY;
+                    break;
+                case 4:
+                    mCurrent++;
+                    if (mCurrent > count){
+                        mCurrent = 0;
+                    }
+                    playMusicFile(musicLists.get(mCurrent).getData());
+                    mStatus = Constant.STATUS_PLAY;
+                    break;
+                case 5:
+                    mCurrent = intent.getIntExtra("current",-1);
+                    playMusicFile(musicLists.get(mCurrent).getData());
+                    mStatus = Constant.STATUS_PLAY;
+                    break;
 
             }
+
+            Intent sendIntent = new Intent(Constant.UPDATE_ACTION);
+            sendIntent.putExtra("update",mStatus);    //传递当前的状态
+            sendBroadcast(sendIntent);
         }
     }
 }
