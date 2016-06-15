@@ -12,7 +12,6 @@ import android.provider.MediaStore.Audio;
 import android.support.annotation.Nullable;
 
 import com.lpc.simplemusicplayerdemo.Constant;
-import com.lpc.simplemusicplayerdemo.MainActivity;
 import com.lpc.simplemusicplayerdemo.bean.MusicBean;
 
 import java.io.IOException;
@@ -36,9 +35,9 @@ public class MusicService extends Service {
      * 0x12:播放状态
      * 0x13:暂停状态
      * */
-    private int mStatus = 0x11;   //标识当前的播放状态：停止，暂停，播放
-    private int mCurrent = 0;     //表示当前未播放的文件数
-    private  int count = 0;        //表示文件数
+    private int mStatus = 0x11;   //当前的播放状态：停止，暂停，播放
+    private int mCurrent = 0;     //表示播放过的文件数
+    private  int count = 0;
     private int flag = 0;
 
     private MyReceiver receiver;
@@ -47,7 +46,7 @@ public class MusicService extends Service {
     public void onCreate() {
         super.onCreate();
         flag = 1;
-        //当activity首次显示的时候就将歌曲显示在ListView中
+
         showMusicLists();
         count = musicLists.size();
         receiver = new MyReceiver();
@@ -96,7 +95,7 @@ public class MusicService extends Service {
 
             Map<String,Object> map = new HashMap<>();
             map.put("name",cursor.getString(1));    //歌名
-            map.put("author",cursor.getString(4));   //歌手
+            map.put("artist",cursor.getString(4));   //歌手
             list.add(map);
         }
     }
@@ -144,6 +143,8 @@ public class MusicService extends Service {
             mPlayer.stop();
             mPlayer.release();
         }
+
+        unregisterReceiver(receiver);
     }
 
     @Nullable
@@ -152,6 +153,8 @@ public class MusicService extends Service {
         return null;
     }
 
+
+    //接收歌曲控制的广播
     public class MyReceiver extends BroadcastReceiver{
 
         @Override
