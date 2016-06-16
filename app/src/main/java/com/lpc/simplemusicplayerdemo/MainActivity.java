@@ -82,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         exitApp.setOnClickListener(this);
     }
 
-
     @Override
     public void onClick(View v) {
         Intent intent = new Intent(Constant.CTRL_Action);
@@ -135,7 +134,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
-
 
     /* 播放列表 */
     public void musicList() {
