@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Description:
+ * Description: music play service class
  * Created by lpc on 2016/6/12.
  */
 public class MusicService extends Service {
@@ -31,11 +31,12 @@ public class MusicService extends Service {
     private List<Map<String,Object>> list = new ArrayList<>();
 
     /**
+     * 播放状态：
      * 0x11:停止状态
      * 0x12:播放状态
      * 0x13:暂停状态
      * */
-    private int mStatus = 0x11;   //当前的播放状态：停止，暂停，播放
+    private int mStatus = 0x11;   //当前的播放状态
     private int mCurrent = 0;     //表示播放过的文件数
     private  int count = 0;
     private int flag = 0;
@@ -50,7 +51,7 @@ public class MusicService extends Service {
         showMusicLists();
         count = musicLists.size();
         receiver = new MyReceiver();
-        IntentFilter intentFilter = new IntentFilter(Constant.CTRL_Action);
+        IntentFilter intentFilter = new IntentFilter(Constant.CTRL_ACTION);
         registerReceiver(receiver,intentFilter);
         mPlayer = new MediaPlayer();
         mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {

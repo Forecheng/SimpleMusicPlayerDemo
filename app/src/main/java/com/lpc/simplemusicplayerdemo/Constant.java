@@ -17,5 +17,5 @@ public class Constant {
      * action
      * */
     public static final String UPDATE_ACTION = "com.lpc.musicdemo.update";
-    public static final String CTRL_Action = "com.lpc.musicdemo.ctrl";
+    public static final String CTRL_ACTION = "com.lpc.musicdemo.ctrl";
 }

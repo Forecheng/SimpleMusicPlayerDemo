@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        Intent intent = new Intent(Constant.CTRL_Action);
+        Intent intent = new Intent(Constant.CTRL_ACTION);
         switch (v.getId()){
             case R.id.play_music:
                 intent.putExtra("control",1);
@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onItemClick(AdapterView<?> parent, View view,
                                     int current, long id) {
 
-                Intent intent=new Intent(Constant.CTRL_Action);
+                Intent intent=new Intent(Constant.CTRL_ACTION);
                 intent.putExtra("control", 5);
                 intent.putExtra("current", current);
                 sendBroadcast(intent);
